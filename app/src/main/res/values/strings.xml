@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CharityApp</string>
+    <string name="failed_message">Failed</string>
+    <string name="donate">Donate</string>
+    <string name="saved">Saved</string>
+    <string name="last_donation_not_found">Last donation not found</string>
+    <string name="edit_text_empty_error">EditText cannot be empty</string>
+    <string name="last_donation_here">LAST DONATION</string>
+</resources>

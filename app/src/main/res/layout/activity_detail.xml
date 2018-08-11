@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Component.DetailActivity">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/description_app_bar" />
+
+    <ImageView
+        android:id="@+id/charityImg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar" />
+
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/charityImg"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/charityName"
+            style="@style/AppTheme.detail_textview_style" />
+
+        <TextView
+            android:id="@+id/charityType"
+            style="@style/AppTheme.detail_textview_style"
+            android:layout_below="@id/charityName" />
+
+        <TextView
+            android:id="@+id/charityDesc"
+            style="@style/AppTheme.detail_textview_style"
+            android:layout_below="@id/charityType" />
+
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/charity_donation"
+        style="@style/AppTheme.detail_textview_style"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:hint="@string/donate"
+        android:textSize="16sp" />
+
+</RelativeLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    app:contentInsetEnd="0dp"
+    app:contentInsetStart="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingEnd="8dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/charityTitle"
+            style="@style/AppTheme.toolbar_text_view_style" />
+
+        <TextView
+            android:id="@+id/textLastDonation"
+            style="@style/AppTheme.toolbar_text_view_style"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/doneIcon"
+            android:text="@string/last_donation_here"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/doneIcon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/tick_mark" />
+    </RelativeLayout>
+
+
+</android.support.v7.widget.Toolbar>
