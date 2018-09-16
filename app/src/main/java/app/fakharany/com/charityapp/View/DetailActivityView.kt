@@ -1,5 +1,10 @@
 package app.fakharany.com.charityapp.View
 
-interface DetailActivityView :RootInterface{
-    fun showLastDonation(amount:String)
+interface DetailActivityView {
+    fun showLastDonation(amount: String)
+    fun onLastDonationNotFound()
+    fun onFinishedSaveDonation()
+    fun onRecieveLastDonation(amount: Double?)
+    fun onEditTextEmpty()
+
 }

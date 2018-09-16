@@ -6,4 +6,5 @@
     <string name="last_donation_not_found">Last donation not found</string>
     <string name="edit_text_empty_error">EditText cannot be empty</string>
     <string name="last_donation_here">LAST DONATION</string>
+    <string name="failed_online_message">Failed getting online response</string>
 </resources>

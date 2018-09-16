@@ -1,36 +1,95 @@
 package app.fakharany.com.charityapp.Component
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 import app.fakharany.com.charityapp.Adapter.CharityAdapter
-import app.fakharany.com.charityapp.Model.CharityActivityModel
-import app.fakharany.com.charityapp.Presenter.CharityActivityPresenter
+import app.fakharany.com.charityapp.Model.DataClasses.Constants
+import app.fakharany.com.charityapp.Presenter.CharityActivityPresenterImpl
+import app.fakharany.com.charityapp.Presenter.interfaces.CharityActivityPresenter
 import app.fakharany.com.charityapp.R
+import app.fakharany.com.charityapp.Realm.Charities
 import app.fakharany.com.charityapp.View.CharityActivityView
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_charity.*
+import javax.inject.Inject
 
-class CharityActivity : AppCompatActivity(), CharityActivityView {
-    override fun startDetailActivity(intent: Intent) {
-        startActivity(intent)
+open class CharityActivity : AppCompatActivity(), CharityActivityView, CharityAdapter.AdapterOnItemClickListener {
+    override fun showFirstCharity(charity: Charities) {
+        simpletext.text = charity.organization_name
     }
 
-    var presenter = CharityActivityPresenter(this, CharityActivityModel(), this)
+    @Inject
+    lateinit var presenterImpl: CharityActivityPresenter
+    open var progress: ProgressDialog? = null
+    lateinit var adapter: CharityAdapter
 
-    override fun showMessage(message: String) {
+
+    override fun onErrorLoadingCharities() {
+        progress?.dismiss()
+        showToast(getString(R.string.failed_online_message))
+    }
+
+    fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showCharityList(adapter: CharityAdapter) {
+
+    override fun onClick(charity: Charities) {
+        presenterImpl?.onClickCharity(charity)
+    }
+
+    override fun startDetailActivity(charity: Charities) {
+        val intent = Intent(this, DetailActivity::class.java)
+        val bundle = Bundle()
+        bundle.putParcelable(Constants.CHARITY_OBJ_KEY, charity)
+        intent.putExtras(bundle)
+        startActivity(intent)
+    }
+
+    override fun showCharityList(charities: List<Charities>) {
+        adapter.addData(charities as ArrayList<Charities>)
         charity_list.layoutManager = LinearLayoutManager(this)
         charity_list.adapter = adapter
+        progress?.dismiss()
+        charity_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                var mLayoutManager = charity_list.layoutManager as LinearLayoutManager
+                if (charity_list.layoutManager.getChildCount() + mLayoutManager.findFirstVisibleItemPosition() >= mLayoutManager.itemCount) {
+                    showDialog()
+                    presenterImpl?.getCharities()
+                }
+
+            }
+        })
+
+
+    }
+
+    fun showDialog() {
+        progress?.setTitle("Loading")
+        progress?.setMessage("Wait while loading...")
+        progress?.setCancelable(false)
+        progress?.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_charity)
-        presenter.getCharities()
+        presenterImpl?.onActivityCreated()
+        adapter = CharityAdapter(listener = this)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenterImpl?.onDetach()
     }
 }

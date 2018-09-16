@@ -8,6 +8,15 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/charity_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/simpletext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="this is text" />
 </android.support.constraint.ConstraintLayout>
