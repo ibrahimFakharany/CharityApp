@@ -20,8 +20,8 @@ import dagger.Provides
 class CharityActivityModule {
 
     @Provides
-    fun provideCharityActivityPresenter(view: CharityActivityView, model: RepositoryImpl, postExecutionThread: PostExecutionThreadImpl): CharityActivityPresenter {
-        return CharityActivityPresenterImpl(view, model, postExecutionThread)
+    fun provideCharityActivityPresenter(view: CharityActivityView, model: RepositoryImpl): CharityActivityPresenter {
+        return CharityActivityPresenterImpl(view, model)
     }
 
     @Provides

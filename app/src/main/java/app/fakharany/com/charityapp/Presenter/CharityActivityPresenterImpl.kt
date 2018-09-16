@@ -12,7 +12,7 @@ import io.reactivex.rxkotlin.subscribeBy
 
 
 open class CharityActivityPresenterImpl
-constructor(var mView: CharityActivityView?, var model: Repository, val postExecutionThread: PostExecutionThread) : CharityActivityPresenter {
+constructor(var mView: CharityActivityView?, var model: Repository) : CharityActivityPresenter {
 
     override fun onClickCharity(charity: Charities) {
         mView!!.startDetailActivity(charity)
