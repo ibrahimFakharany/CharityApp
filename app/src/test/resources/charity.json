@@ -1,0 +1,11 @@
+{
+  "charities": [
+    {
+      "id": 1,
+      "organization_name": "Abu Rish Hospital",
+      "organization_pic": "http://abolreesh-cusph.com/wp-content/uploads/2017/10/logo.png",
+      "organization_type": "Hospital",
+      "organization_desc": "Child Hospital"
+    }
+  ]
+}
