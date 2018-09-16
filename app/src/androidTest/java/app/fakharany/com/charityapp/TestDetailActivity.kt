@@ -39,7 +39,6 @@ class TestDetailActivity {
         // this is last donation
         Donation(id.toInt(), donationAmount.toDouble()).saveManaged(realm)
 
-
         organizationName = AndroidDataFactory.randomString()
         var organizationPic = AndroidDataFactory.randomString()
         var organizationType = AndroidDataFactory.randomString()

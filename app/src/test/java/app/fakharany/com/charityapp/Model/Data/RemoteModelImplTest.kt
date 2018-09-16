@@ -57,7 +57,6 @@ class RemoteModelImplTest {
 
         mockWebServer.enqueue(mockResponse)
         apiInterface.getCategories().subscribeWith(observer)
-//        observer.awaitTerminalEvent(2, TimeUnit.SECONDS)
         observer.assertNoErrors()
         observer.assertValueCount(1)
         val path = "/7arka_get_charities"

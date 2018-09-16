@@ -1,28 +1,38 @@
 package app.fakharany.com.charityapp
 
 import android.app.Activity
-import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.IdlingRegistry
+import android.support.test.espresso.UiController
+import android.support.test.espresso.ViewAction
 import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
+import android.support.test.espresso.matcher.ViewMatchers.*
+import android.support.test.espresso.web.internal.deps.guava.collect.Iterables
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import android.support.test.runner.lifecycle.Stage
+import android.view.View
 import app.fakharany.com.charityapp.Adapter.CharityAdapter
 import app.fakharany.com.charityapp.Component.CharityActivity
-import app.fakharany.com.charityapp.DI.App
+import app.fakharany.com.charityapp.Component.SimpleIdlingResource
 import app.fakharany.com.charityapp.Presenter.interfaces.CharityActivityPresenter
 import dagger.android.AndroidInjector
 import dagger.android.AndroidInjector.Factory
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.DispatchingAndroidInjector_Factory
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import javax.inject.Provider
+
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -31,17 +41,20 @@ import javax.inject.Provider
  */
 @RunWith(AndroidJUnit4::class)
 class CharityActivityTest {
-    val mockCharityPresenter = Mockito.mock(CharityActivityPresenter::class.java)
+    lateinit var simpleIdlingResource: SimpleIdlingResource
 
     @get:Rule
-    val activityRule = object : ActivityTestRule<CharityActivity>(CharityActivity::class.java, true, true) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            val myApp = InstrumentationRegistry.getTargetContext().applicationContext as App
-            myApp.dispatchingAndroidInjector = createFakeActivityInjector<CharityActivity> {
-                presenterImpl = mockCharityPresenter
-            }
-        }
+    val activityRule = ActivityTestRule<CharityActivity>(CharityActivity::class.java)
+
+    @Before
+    fun setup() {
+        simpleIdlingResource = activityRule.activity.getMySimpleIdlingResource()
+        IdlingRegistry.getInstance().register(simpleIdlingResource)
+    }
+
+    @After
+    fun downTear() {
+        IdlingRegistry.getInstance().unregister(simpleIdlingResource)
     }
 
     @Rule
@@ -50,36 +63,44 @@ class CharityActivityTest {
 
     @Test
     fun useAppContext() {
-        onView(withId(R.id.charity_list)).perform(RecyclerViewActions.scrollToPosition<CharityAdapter.MyViewHolder>(0))
+        onView(withId(R.id.charity_list)).perform(RecyclerViewActions.scrollToPosition<CharityAdapter.MyViewHolder>(5))
                 .perform(click())
         onView(withId(R.id.charity_donation)).perform(typeText("25"), closeSoftKeyboard())
         onView(withId((R.id.doneIcon))).perform(click())
-        onView(withId(R.id.charity_list)).perform(RecyclerViewActions.scrollToPosition<CharityAdapter.MyViewHolder>(0))
+
+        var activity = getActivity()
+        activity?.finish()
+
+        onView(withId(R.id.charity_list)).perform(RecyclerViewActions.scrollToPosition<CharityAdapter.MyViewHolder>(5))
                 .perform(click())
         onView(withId(R.id.textLastDonation)).check(matches(withText("25.0")))
     }
 
-    @Test
+    /*@Test
     fun testCharityNameIsDisplayed() {
         onView(withId(R.id.simpletext))
                 .check(matches(withText("Abu Rish Hospital")))
-    }
+    }*/
 
-    @Test
-    fun testOnActivityCreatedCalledOnPresenter() {
-        var presenter = activityRule.activity.presenterImpl
-        Mockito.verify(presenter).onActivityCreated()
-    }
 
-    inline fun <reified T : Activity> createFakeActivityInjector(crossinline block: T.() -> Unit)
-            : DispatchingAndroidInjector<Activity> {
-        val injector = AndroidInjector<Activity> { instance ->
-            if (instance is T) {
-                instance.block()
+    fun getActivity(): Activity? {
+        val currentActivity = arrayOfNulls<Activity>(1)
+        onView(allOf(withId(android.R.id.content), isDisplayed())).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(View::class.java)
             }
-        }
-        val factory = AndroidInjector.Factory<Activity> { injector }
-        val map = mapOf(Pair<Class<out Activity>, Provider<Factory<out Activity>>>(T::class.java, Provider { factory }))
-        return DispatchingAndroidInjector_Factory.newDispatchingAndroidInjector(map)
+
+            override fun getDescription(): String {
+                return "getting text from a TextView"
+            }
+
+            override fun perform(uiController: UiController, view: View) {
+                if (view.getContext() is Activity) {
+                    val activity1 = view.getContext() as Activity
+                    currentActivity[0] = activity1
+                }
+            }
+        })
+        return currentActivity[0]
     }
 }

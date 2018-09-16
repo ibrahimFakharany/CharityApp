@@ -33,7 +33,6 @@ class CharityActivityModule {
     @Provides
     fun providesCharityActivityRepository(remoteModelImpl: RemoteModelImpl, localModelImpl: LocalModelImpl): RepositoryImpl = RepositoryImpl(remoteModelImpl, localModelImpl)
 
-
     @Provides
     fun providesCharityActivityView(charityActivity: CharityActivity): CharityActivityView = charityActivity
 
@@ -51,6 +50,4 @@ class CharityActivityModule {
     fun provideApplication(activity: CharityActivity): App {
         return activity.application as App
     }
-
-
 }

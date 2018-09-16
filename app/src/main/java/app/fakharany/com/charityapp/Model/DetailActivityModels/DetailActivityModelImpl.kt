@@ -20,7 +20,6 @@ class DetailActivityModelImpl : AddDontionRepository {
         } else
             return Observable.just(lastDonation)
     }
-
     override fun addDonate(bundle: Bundle): Observable<Donation> {
         if (bundle == null)
             throw IllegalArgumentException("this bundle cannot be null")

@@ -45,7 +45,7 @@ class DetailActivity : AppCompatActivity(), DetailActivityView, View.OnClickList
         // on done Donatation icon click
         if (!charity_donation.text.toString().isEmpty()) {
             simpleIdlingResource.setIdleState(false)
-            presenterImpl.donate(charity_donation.text.toString().toDouble()).subscribe {
+            presenterImpl.donate(id.toInt(), charity_donation.text.toString().toDouble()).subscribe {
                 presenterImpl.recieveDonationSuccessfully(it.amount)
                 simpleIdlingResource.setIdleState(true)
             }
@@ -88,6 +88,7 @@ class DetailActivity : AppCompatActivity(), DetailActivityView, View.OnClickList
     override fun onResume() {
         super.onResume()
         presenterImpl.onResume(id.toInt()).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            Toast.makeText(this, it.amount.toString(), Toast.LENGTH_SHORT).show()
             presenterImpl.recieveDonationSuccessfully(it.amount)
         }
     }

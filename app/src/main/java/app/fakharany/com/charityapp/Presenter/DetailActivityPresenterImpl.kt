@@ -29,9 +29,9 @@ class DetailActivityPresenterImpl(val mView: DetailActivityView, val modelImpl: 
         mView.onEditTextEmpty()
     }
 
-    override fun donate(amount: Double): Observable<Donation> {
+    override fun donate(id: Int, amount: Double): Observable<Donation> {
         if (bundle != null) {
-            bundle.putInt(ORGANIZATION_ID, extras!!.getInt("id"))
+            bundle.putInt(ORGANIZATION_ID, id)
             bundle.putDouble(DONATION_AMOUNT, amount)
 
         }

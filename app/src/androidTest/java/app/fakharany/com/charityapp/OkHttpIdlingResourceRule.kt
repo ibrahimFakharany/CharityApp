@@ -12,7 +12,6 @@ open class OkHttpIdlingResourceRule : TestRule {
             override fun evaluate() {
                 var idlingResourceRule = OkHttp3IdlingResource.create("okhttp", OkHttp.getClientInstance())
                 Espresso.registerIdlingResources(idlingResourceRule)
-
                 base.evaluate()
                 Espresso.unregisterIdlingResources(idlingResourceRule)
 

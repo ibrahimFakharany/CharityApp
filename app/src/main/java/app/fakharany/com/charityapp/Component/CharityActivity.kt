@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 import app.fakharany.com.charityapp.Adapter.CharityAdapter
 import app.fakharany.com.charityapp.Model.DataClasses.Constants
-import app.fakharany.com.charityapp.Presenter.CharityActivityPresenterImpl
 import app.fakharany.com.charityapp.Presenter.interfaces.CharityActivityPresenter
 import app.fakharany.com.charityapp.R
 import app.fakharany.com.charityapp.Realm.Charities
@@ -23,11 +22,15 @@ open class CharityActivity : AppCompatActivity(), CharityActivityView, CharityAd
         simpletext.text = charity.organization_name
     }
 
+    var simpleIdlingResource: SimpleIdlingResource = SimpleIdlingResource()
     @Inject
     lateinit var presenterImpl: CharityActivityPresenter
     open var progress: ProgressDialog? = null
     lateinit var adapter: CharityAdapter
 
+    fun getMySimpleIdlingResource(): SimpleIdlingResource {
+        return simpleIdlingResource
+    }
 
     override fun onErrorLoadingCharities() {
         progress?.dismiss()
@@ -55,6 +58,8 @@ open class CharityActivity : AppCompatActivity(), CharityActivityView, CharityAd
         adapter.addData(charities as ArrayList<Charities>)
         charity_list.layoutManager = LinearLayoutManager(this)
         charity_list.adapter = adapter
+        simpleIdlingResource.setIdleState(true)
+        Toast.makeText(this, "finished loading ", Toast.LENGTH_SHORT).show()
         progress?.dismiss()
         charity_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -83,6 +88,7 @@ open class CharityActivity : AppCompatActivity(), CharityActivityView, CharityAd
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_charity)
+        simpleIdlingResource.setIdleState(false)
         presenterImpl?.onActivityCreated()
         adapter = CharityAdapter(listener = this)
 

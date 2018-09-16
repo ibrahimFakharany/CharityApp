@@ -18,8 +18,6 @@ class DetailActivityPresenterImplTest {
 
     @Test
     fun testDonationDone() {
-
-
         var data = DataFactory.randomDouble()
         stubbingAddDonate(Bundle(), DataFactory.randomInt(), DataFactory.randomDouble())
         var observer = detailPresenter.donate(data).test()
